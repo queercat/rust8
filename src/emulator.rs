@@ -3,36 +3,21 @@ use std::collections::VecDeque;
 #[derive(Debug)]
 pub struct Emulator {
     /// Talk about how a bool technically represents a bit but is physically represented using a byte.
-    memory: [u8; 4000],
+    memory: [u8; 4096],
     display: [[u8; 64]; 32],
-    program_counter: u8,
+    program_counter: u16,
     index_register: u16,
     stack: VecDeque<u16>,
     delay_timer: u8,
     sound_timer: u8,
 
-    v0_register: i8,
-    v1_register: i8,
-    v2_register: i8,
-    v3_register: i8,
-    v4_register: i8,
-    v5_register: i8,
-    v6_register: i8,
-    v7_register: i8,
-    v8_register: i8,
-    v9_register: i8,
-    va_register: i8,
-    vb_register: i8,
-    vc_register: i8,
-    vd_register: i8,
-    ve_register: i8,
-
-    // Flag register.
-    vf_register: i8,
+    registers: [u8; 16]
 }
 
 impl Emulator {
     pub fn write(&mut self, bytes: Vec<u8>, offset: u16) {
+        if (bytes.len() + offset as usize) >= self.memory.len() { panic!("Memory buffer overflow!") }
+
         let mut i = 0;
         for byte in bytes {
             self.memory[(i + offset) as usize] = byte;
@@ -42,30 +27,14 @@ impl Emulator {
 
     pub fn new() -> Self {
         let mut emulator = Self {
-            memory: [0; 4000],
+            memory: [0; 4096],
             display: [[0; 64]; 32],
             program_counter: 0,
             index_register: 0,
             stack: VecDeque::new(),
             delay_timer: 0,
             sound_timer: 0,
-
-            v0_register: 0,
-            v1_register: 0,
-            v2_register: 0,
-            v3_register: 0,
-            v4_register: 0,
-            v5_register: 0,
-            v6_register: 0,
-            v7_register: 0,
-            v8_register: 0,
-            v9_register: 0,
-            va_register: 0,
-            vb_register: 0,
-            vc_register: 0,
-            vd_register: 0,
-            ve_register: 0,
-            vf_register: 0,
+            registers: [0; 16]
         };
 
         emulator.init();
