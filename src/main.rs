@@ -1,3 +1,7 @@
+use crate::emulator::Emulator;
+
+mod emulator;
+
 fn main() {
-    println!("Hello, world!");
+    let emulator = Emulator::new();
 }
